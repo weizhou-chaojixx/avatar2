@@ -371,7 +371,7 @@ class Avatar(Thread):
                             (Address = 0x%x)" % message.address)
 
         try:
-            mem = range.forwarded_to.read_memory(message.address, message.size)
+            mem = range.forwarded_to.read_memory(message.address, message.size, message.pc)
             if not isinstance(mem, int):
                 raise Exception(("Forwarded read returned data of type %s "
                                  "(expected: int)" % type(mem)))
@@ -397,7 +397,7 @@ class Avatar(Thread):
             raise Exception("Forward request for non existing target received!")
 
         success = mem_range.forwarded_to.write_memory(message.address, message.size,
-                                                      message.value)
+                                                      message.value, message.pc)
 
         message.origin.protocols.remote_memory.send_response(message.id, 0,
                                                              success)

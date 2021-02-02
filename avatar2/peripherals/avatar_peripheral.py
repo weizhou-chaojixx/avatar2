@@ -17,7 +17,7 @@ class AvatarPeripheral(object):
         """
         pass
 
-    def write_memory(self, address, size, value, num_words=1, raw=False):
+    def write_memory(self, address, size, value, pc, num_words=1, raw=False):
         if num_words != 1 or raw is True:
             raise Exception("write_memory for AvatarPeripheral does not support \
                              'num_words' or 'raw' kwarg")
@@ -31,9 +31,10 @@ class AvatarPeripheral(object):
         if len(intervals) > 1:
             raise Exception("Multiple write handler for peripheral %s\
                             at offset %d" % (self.name, offset))
-        return intervals.pop().data(offset, size, value)
+        f = intervals.pop().data
+        return f(offset, size, value, pc)
 
-    def read_memory(self, address, size, num_words=1, raw=False):
+    def read_memory(self, address, size, pc, num_words=1, raw=False):
         if num_words != 1 or raw is True:
             raise Exception("read_memory for AvatarPeripheral does not support \
                              'num_words' or 'raw' kwarg")
@@ -48,4 +49,5 @@ class AvatarPeripheral(object):
         if len(intervals) > 1:
             raise Exception("Multiple read handler for peripheral %s\
                             at offset %d" % (self.name, offset))
-        return intervals.pop().data(offset, size)
+        f = intervals.pop().data
+        return f(offset, size, pc)
